@@ -30,7 +30,7 @@ RSpec.describe CQM::Converter::HDSRecord do
     qdm_eh_relatedto_test = @hds_record_converter.to_qdm(hds_eh_relatedto_test)
 
     # grab the converted assessment element
-    qdm_assessment = qdm_eh_relatedto_test.dataElements.select { |e| e.category == 'assessment' }.first
+    qdm_assessment = qdm_eh_relatedto_test.dataElements.select { |e| e.qdmCategory == 'assessment' }.first
 
     # specifically check the relatedTo in the assessment is the expected value
     expect(qdm_assessment.relatedTo.length).to eq(1)
@@ -51,6 +51,7 @@ RSpec.describe CQM::Converter::HDSRecord do
 
   it 'converts HDS EH 2 to QDM EH 2 properly' do
     hds_eh2 = Record.new.from_json(File.read('spec/fixtures/hds/records/eh/2.json'))
+    require 'byebug'; byebug
     qdm_eh2 = @hds_record_converter.to_qdm(hds_eh2)
     qdm_eh2_json = JSON.parse(to_utc(qdm_eh2.to_json(except: ['_id', 'id']).to_s)).clean_hash
     fixture = JSON.parse(to_utc(File.read('spec/fixtures/qdm/patients/eh/2.json'))).clean_hash

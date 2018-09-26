@@ -18,10 +18,10 @@ module CQM::Converter
       # Loop over the QDM Patient's data elements, and create the corresponding
       # HDS Record Entry models on the newly created record.
       patient.dataElements.each do |data_element|
-        category = data_element.category if data_element.fields.include? 'category'
+        category = data_element.qdmCategory if data_element.fields.include? 'qdmCategory'
         next unless category
         # Handle patient characteristics seperately.
-        next if data_element.category == 'patient_characteristic'
+        next if data_element.qdmCategory == 'patient_characteristic'
 
         # Grab the QDM datatype name of this data element.
         qdm_model_name = data_element.class.name.demodulize
@@ -202,7 +202,7 @@ module CQM::Converter
     def get_data_elements(patient, category, status = nil)
       matches = []
       patient.dataElements.each do |data_element|
-        matches << data_element if data_element[:category] == category && (data_element[:qdmStatus] == status || status.nil?)
+        matches << data_element if data_element[:qdmCategory] == category && (data_element[:qdmStatus] == status || status.nil?)
       end
       matches
     end
