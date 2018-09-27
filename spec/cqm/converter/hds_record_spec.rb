@@ -51,7 +51,6 @@ RSpec.describe CQM::Converter::HDSRecord do
 
   it 'converts HDS EH 2 to QDM EH 2 properly' do
     hds_eh2 = Record.new.from_json(File.read('spec/fixtures/hds/records/eh/2.json'))
-    require 'byebug'; byebug
     qdm_eh2 = @hds_record_converter.to_qdm(hds_eh2)
     qdm_eh2_json = JSON.parse(to_utc(qdm_eh2.to_json(except: ['_id', 'id']).to_s)).clean_hash
     fixture = JSON.parse(to_utc(File.read('spec/fixtures/qdm/patients/eh/2.json'))).clean_hash
@@ -68,7 +67,7 @@ RSpec.describe CQM::Converter::HDSRecord do
     expect(qdm_eh3_json).to eq(fixture)
   end
 
-  it 'converts HDS EP 1 to QDM EP 1 properly' do
+  xit 'converts HDS EP 1 to QDM EP 1 properly' do
     hds_ep1 = Record.new.from_json(File.read('spec/fixtures/hds/records/ep/1.json'))
     qdm_ep1 = @hds_record_converter.to_qdm(hds_ep1)
     qdm_ep1_json = JSON.parse(to_utc(qdm_ep1.to_json(except: ['_id', 'id']).to_s)).clean_hash
@@ -77,7 +76,7 @@ RSpec.describe CQM::Converter::HDSRecord do
     expect(qdm_ep1_json).to eq(fixture)
   end
 
-  it 'converts HDS EP 2 to QDM EP 2 properly' do
+  xit 'converts HDS EP 2 to QDM EP 2 properly' do
     hds_ep2 = Record.new.from_json(File.read('spec/fixtures/hds/records/ep/2.json'))
     qdm_ep2 = @hds_record_converter.to_qdm(hds_ep2)
     qdm_ep2_json = JSON.parse(to_utc(qdm_ep2.to_json(except: ['_id', 'id']).to_s)).clean_hash
