@@ -333,6 +333,7 @@ module CQM::Converter
       record['medical_record_assigner'] = patient.extendedData['medical_record_assigner'] if patient.extendedData['medical_record_assigner']
       record['description'] = patient.extendedData['description'] if patient.extendedData['description']
       record['description_category'] = patient.extendedData['description_category'] if patient.extendedData['description_category']
+      record['effective_time'] = patient.extendedData['effective_time'] if patient.extendedData['effective_time']
       if patient.extendedData['provider_performances']
         providers = JSON.parse(patient.extendedData['provider_performances']).collect do |provider|
           ProviderPerformance.new.from_json(provider.to_json)
