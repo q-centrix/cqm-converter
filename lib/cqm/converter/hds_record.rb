@@ -8,6 +8,8 @@ module CQM::Converter
     # Initialize a new HDSRecord converter. NOTE: This should be done once, and then
     # used for every HDS Record you want to convert, since it takes a few seconds
     # to initialize the conversion environment using Sprockets.
+    Valid_Sections = [:allergies, :conditions, :encounters, :immunizations, :medications, :procedures, :results, :vital_signs, :socialhistories, :communications, :assessments]
+
     def initialize
       # Create a new sprockets environment.
       environment = Sprockets::Environment.new
@@ -29,10 +31,12 @@ module CQM::Converter
     def to_qdm(record)
       # Start with a new QDM patient.
       patient = QDM::Patient.new
-
+      record = verify_description(record)
+      
       # Build and execute JavaScript that will create a 'CQL_QDM.Patient'
       # JavaScript version of the HDS record. Specifically, we will use
       # this to build our patient's 'dataElements'.
+      
       cql_qdm_patient = ExecJS.exec Utils.hds_to_qdm_js(@js_dependencies, record, @qdm_model_attrs)
 
       # Make sure all date times are in the correct form.
@@ -144,6 +148,27 @@ module CQM::Converter
       end
 
       data_element
+    end
+    def verify_description(rec)
+      Record::Valid_Sections.each do |section|
+        if !rec.send(section).blank?
+          tmp = rec.send(section)  
+          tmp.each do |t|
+            if t['description'] == nil
+              t['description'] = get_description(t['oid'])
+            end
+          end  
+        end
+      end
+      rec
+    end
+
+    def get_description(hqmf_id)
+      desc = ""
+      if hqmf_id == "2.16.840.1.113883.10.20.28.3.110"  
+        desc = "Diagnosis:"
+      end
+      desc
     end
   end
 end
