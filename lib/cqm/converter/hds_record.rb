@@ -176,7 +176,8 @@ module CQM::Converter
         when "2.16.840.1.113883.10.20.28.3.112"
         desc = "Immunization Administered:"
         when "2.16.840.1.113883.3.560.1.404"
-        desc = "Patient Characteristic Expired:"
+        #Hack: Data Criteria Description Cant Be Empty 
+        desc = "Patient Characteristic xpired:"
       end
       desc
     end
