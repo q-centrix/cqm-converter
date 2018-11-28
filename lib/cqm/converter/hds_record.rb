@@ -155,7 +155,12 @@ module CQM::Converter
           tmp = rec.send(section)  
           tmp.each do |t|
             if t['description'] == nil
-              t['description'] = get_description(t['oid'])
+              description= get_description(t['oid'])
+              if description.present?
+                t['description']= description
+              else
+                puts "Error In Converting To QDM Patient 'Description is Empty'"
+              end
             end
           end  
         end
@@ -165,8 +170,11 @@ module CQM::Converter
 
     def get_description(hqmf_id)
       desc = ""
-      if hqmf_id == "2.16.840.1.113883.10.20.28.3.110"  
+      case hqmf_id
+        when "2.16.840.1.113883.10.20.28.3.110"  
         desc = "Diagnosis:"
+        when "2.16.840.1.113883.10.20.28.3.112"
+        desc = "Immunization Administered"
       end
       desc
     end
