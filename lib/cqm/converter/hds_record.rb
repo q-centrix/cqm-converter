@@ -174,7 +174,7 @@ module CQM::Converter
         when "2.16.840.1.113883.10.20.28.3.110"  
         desc = "Diagnosis:"
         when "2.16.840.1.113883.10.20.28.3.112"
-        desc = "Immunization Administered"
+        desc = "Immunization Administered:"
       end
       desc
     end
