@@ -150,7 +150,7 @@ module CQM::Converter
       data_element
     end
     def verify_description(rec)
-      Record::Valid_Sections.each do |section|
+      Valid_Sections.each do |section|
         if !rec.send(section).blank?
           tmp = rec.send(section)  
           tmp.each do |t|
