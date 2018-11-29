@@ -8,7 +8,7 @@ module CQM::Converter
     # Initialize a new HDSRecord converter. NOTE: This should be done once, and then
     # used for every HDS Record you want to convert, since it takes a few seconds
     # to initialize the conversion environment using Sprockets.
-    Valid_Sections = [:allergies, :conditions, :encounters, :immunizations, :medications, :procedures, :results, :vital_signs, :socialhistories, :communications, :assessments]
+    Valid_Sections = [:allergies, :conditions, :encounters, :immunizations, :medications, :procedures, :results, :vital_signs, :socialhistories, :communications, :assessments, :adverse_events]
 
     def initialize
       # Create a new sprockets environment.
@@ -178,6 +178,10 @@ module CQM::Converter
         when "2.16.840.1.113883.3.560.1.404"
         #Hack: Data Criteria Description Cant Be Empty 
         desc = "Patient Characteristic xpired:"
+        when "2.16.840.1.113883.10.20.28.3.119"
+        desc = "Allergy, Intolerance:"
+        when "2.16.840.1.113883.10.20.28.3.120"
+        desc = "Adverse Event:"
       end
       desc
     end
