@@ -172,16 +172,20 @@ module CQM::Converter
       desc = ""
       case hqmf_id
         when "2.16.840.1.113883.10.20.28.3.110"  
-        desc = "Diagnosis:"
+          desc = "Diagnosis:"
         when "2.16.840.1.113883.10.20.28.3.112"
-        desc = "Immunization Administered:"
+          desc = "Immunization Administered:"
         when "2.16.840.1.113883.3.560.1.404"
-        #Hack: Data Criteria Description Cant Be Empty 
-        desc = "Patient Characteristic xpired:"
+          #Hack: Data Criteria Description Cant Be Empty 
+          desc = "Patient Characteristic xpired:"
         when "2.16.840.1.113883.10.20.28.3.119"
-        desc = "Allergy, Intolerance:"
+          desc = "Allergy, Intolerance:"
         when "2.16.840.1.113883.10.20.28.3.120"
-        desc = "Adverse Event:"
+          desc = "Adverse Event:"
+        when "2.16.840.1.113883.3.560.1.64"
+          desc = "Substance, Administered:"
+        when "2.16.840.1.113883.3.560.1.14"
+          desc ="Medication, Administered:"
       end
       desc
     end
