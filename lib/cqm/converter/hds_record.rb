@@ -8,8 +8,8 @@ module CQM::Converter
     # Initialize a new HDSRecord converter. NOTE: This should be done once, and then
     # used for every HDS Record you want to convert, since it takes a few seconds
     # to initialize the conversion environment using Sprockets.
-    Valid_Sections = [:allergies, :conditions, :encounters, :immunizations, :medications, :procedures, :results, :vital_signs, :socialhistories, :communications, :assessments, :adverse_events]
-
+    Valid_Sections = [:allergies, :conditions, :encounters, :immunizations, :medications, :procedures, :results, :vital_signs, :socialhistories, :communications, :assessments, :adverse_events, :medical_equipment]
+    Valid_Classnames = ["adverseevent", "allergyintolerance", "assessmentperformed", "assessmentrecommended", "patientcareexperience", "providercareexperience", "caregoal", "communicationfrompatienttoprovider", "communicationfromprovidertopatient", "communicationfromprovidertoprovider", "deviceapplied", "deviceorder", "devicerecommended", "diagnosis", "diagnosticstudyorder", "diagnosticstudyperformed", "diagnosticstudyrecommended", "encounterorder", "encounterperformed", "encounterrecommended", "familyhistory", "immunizationadministered", "immunizationorder", "interventionorder", "interventionperformed", "interventionrecommended", "laboratorytestorder", "laboratorytestperformed", "laboratorytestrecommended", "medicationactive", "medicationadministered", "medicationdischarge", "medicationdispensed", "medicationorder", "participation", "physicalexamorder", "physicalexamperformed", "physicalexamrecommended", "procedureorder", "procedureperformed", "procedurerecommended", "substanceadministered", "substanceorder", "substancerecommended", "symptom"]
     def initialize
       # Create a new sprockets environment.
       environment = Sprockets::Environment.new
@@ -149,18 +149,21 @@ module CQM::Converter
 
       data_element
     end
+
     def verify_description(rec)
       Valid_Sections.each do |section|
         if !rec.send(section).blank?
           tmp = rec.send(section)  
           tmp.each do |t|
-            if t['description'] == nil
-              description= get_description(t['oid'])
-              if description.present?
-                t['description']= description
-              else
-                puts "Error In Converting To QDM Patient 'Description is Empty'"
-              end
+            #check we have description on the record
+            if t['description'] != nil && t['description'].length > 0
+              #if description is present, check for colon and availablity from the list of acceptable classnames
+              t['description'] = verify_description_validity(t['description'], t['oid'])
+            elsif t['description'] == nil
+              description= update_default_description(t['oid'])
+              t['description'] = description
+            else
+              puts "Description is not in the format expected"
             end
           end  
         end
@@ -168,26 +171,41 @@ module CQM::Converter
       rec
     end
 
-    def get_description(hqmf_id)
-      desc = ""
-      case hqmf_id
-        when "2.16.840.1.113883.10.20.28.3.110"  
-          desc = "Diagnosis:"
-        when "2.16.840.1.113883.10.20.28.3.112"
-          desc = "Immunization Administered:"
-        when "2.16.840.1.113883.3.560.1.404"
-          #Hack: Data Criteria Description Cant Be Empty 
-          desc = "Patient Characteristic xpired:"
-        when "2.16.840.1.113883.10.20.28.3.119"
-          desc = "Allergy, Intolerance:"
-        when "2.16.840.1.113883.10.20.28.3.120"
-          desc = "Adverse Event:"
-        when "2.16.840.1.113883.3.560.1.64"
-          desc = "Substance, Administered:"
-        when "2.16.840.1.113883.3.560.1.14"
-          desc ="Medication, Administered:"
+    private
+    def update_default_description(hqmf_id)
+            hqmfid = hqmf_id.to_s
+            hqmf_id_file = File.expand_path('../../../ext/description_mapper.json', __FILE__)
+            data = JSON.parse(File.read(hqmf_id_file))
+            description = data[hqmfid]
+            description
+    end
+
+    def verify_description_validity(description, oid)
+      desc = description
+      #Verify whether Description does not have :
+      if (desc.rindex(":") == nil)
+        desc = update_default_description(oid)
+      else
+      # If description has a colon, then verify if the description is acceptable.
+      classname = desc[0 , desc.rindex(":")]
+      # Replace remove commas, slashes, and colons
+      classname.gsub!('-','')
+      classname.gsub!(',','')
+      classname.gsub!(':','')
+      classname.gsub!('/','')
+      classname.downcase!
+      # both 'discharge' and 'order' are present tense when positive and past tense when negative.
+      # need to make consistently present tense (this is what is in the model-info file).
+      classname.gsub!('ordered', 'order')
+      classname.gsub!('discharged', 'discharge')
+      # remove spaces
+      classname.gsub!(' ', '')
+      #If valid class name does not include the classname
+       if !Valid_Classnames.include?(classname)
+        desc = update_default_description(oid)
+       end
       end
-      desc
+     desc
     end
   end
 end
