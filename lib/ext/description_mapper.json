@@ -8,5 +8,6 @@
   "2.16.840.1.113883.3.560.1.14": "Medication, Administered:",
   "2.16.840.1.113883.3.560.1.79": "Encounter, Performed:",
   "2.16.840.1.113883.3.560.1.57": "Physical Exam, Performed:",
-  "2.16.840.1.113883.3.560.1.10": "Device Applied:"
+  "2.16.840.1.113883.3.560.1.10": "Device Applied:",
+  "2.16.840.1.113883.3.560.1.13": "Medication, Active:"
 }
