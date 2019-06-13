@@ -1,0 +1,13 @@
+{
+  "2.16.840.1.113883.10.20.28.3.110": "Diagnosis:",
+  "2.16.840.1.113883.10.20.28.3.112": "Immunization Administered:",
+  "2.16.840.1.113883.3.560.1.404": "Patient Characteristic Expired:",
+  "2.16.840.1.113883.10.20.28.3.119": "Allergy, Intolerance:",
+  "2.16.840.1.113883.10.20.28.3.120": "Adverse Event:",
+  "2.16.840.1.113883.3.560.1.64": "Substance, Administered:",
+  "2.16.840.1.113883.3.560.1.14": "Medication, Administered:",
+  "2.16.840.1.113883.3.560.1.79": "Encounter, Performed:",
+  "2.16.840.1.113883.3.560.1.57": "Physical Exam, Performed:",
+  "2.16.840.1.113883.3.560.1.10": "Device Applied:",
+  "2.16.840.1.113883.3.560.1.13": "Medication, Active:"
+}
