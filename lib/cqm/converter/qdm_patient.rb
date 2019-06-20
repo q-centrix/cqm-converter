@@ -246,19 +246,23 @@ module CQM::Converter
       if hds_attrs.key?('diagnosis') && !hds_attrs['diagnosis'].empty?
         unpacked = {}
         unpacked['type'] = 'COL'
-        unpacked['values'] = hds_attrs['diagnosis'].collect do |diag|
-          code = Utils.hds_codes_to_qdm_codes(diag.codes).first
-          {
-            code_system: code[:codeSystem],
-            code: code[:code],
-            title: diag.description
-          }
+        begin
+          unpacked['values'] = hds_attrs['diagnosis'].collect do |diag|
+            code = Utils.hds_codes_to_qdm_codes(diag.codes).first
+            {
+              code_system: code[:codeSystem],
+              code: code[:code],
+              title: diag.description
+            }
+          end
+        rescue
+          unpacked['values'] = {}
         end
         hds_attrs['diagnosis'] = unpacked
       end
       # Remove diagnosis if principalDiagnosis is equivalent.
       return unless hds_attrs.key?('diagnosis') && hds_attrs.key?('principalDiagnosis')
-      return unless hds_attrs['diagnosis']['values'] && Hash[hds_attrs['diagnosis']['values'].first.sort] == Hash[hds_attrs['principalDiagnosis'].sort]
+      return unless hds_attrs['diagnosis']['values'] && !hds_attrs['diagnosis']['values'].empty?  && Hash[hds_attrs['diagnosis']['values'].first.sort] == Hash[hds_attrs['principalDiagnosis'].sort]
       hds_attrs.delete('diagnosis')
     end
 
