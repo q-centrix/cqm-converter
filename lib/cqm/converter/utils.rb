@@ -84,7 +84,11 @@ module CQM::Converter
 
     # Builds JavaScript to assist the HDS Record to QDM Patient conversion.
     def self.hds_to_qdm_js(js_dependencies, record, qdm_model_attrs)
-      record_json = JSON.parse(record.to_json)
+      # Fix: undefined method `default_scoping?'
+      temp_record = Record.new(record.attributes)
+      record_json = JSON.parse(temp_record.to_json)
+      # record_json = JSON.parse(record.to_json)
+
       # Bonnie changes start_date and end_date in the front end before calculation,
       # and this is what is expected by the cql_qdm_patientapi, so make that change
       # before generating the executable JavaScript.
