@@ -30,7 +30,9 @@ module CQM::Converter
         category = Utils.qdm_to_hds_class_type(category)
 
         # Grab the corresponding HDS model we will cast this QDM model into.
-        hds_model = category.camelize.constantize
+        # handle HDS module (for models with the same name as QApps model)
+        model_name = category.camelize
+        hds_model =  HDS.constants.include?(model_name.to_sym) ? HDS.const_get(model_name) : model_name.constantize
 
         # Start with a new HDS entry.
         hds_entry = hds_model.new
