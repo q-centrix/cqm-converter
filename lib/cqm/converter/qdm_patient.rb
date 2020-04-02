@@ -265,7 +265,9 @@ module CQM::Converter
       # Remove diagnosis if principalDiagnosis is equivalent.
       return unless hds_attrs.key?('diagnosis') && hds_attrs.key?('principalDiagnosis')
       return unless hds_attrs['diagnosis']['values'] && !hds_attrs['diagnosis']['values'].empty?  && Hash[hds_attrs['diagnosis']['values'].first.sort] == Hash[hds_attrs['principalDiagnosis'].sort]
-      hds_attrs.delete('diagnosis')
+
+      # QApps CMS53v7 somehow need diagnosis even it is the same as principalDiagnosis, so comment out the line below
+      # hds_attrs.delete('diagnosis')
     end
 
     # Unpack facility.
